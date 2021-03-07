@@ -4,13 +4,16 @@ usingnamespace std.os.windows.user32;
 
 const expect = std.testing.expect;
 
-const win32 = @import("win32.zig");
+usingnamespace @import("win32.zig");
+usingnamespace @import("control.zig");
 
 pub const MainWindow = struct {
+
+
     pub fn run() void {
         const hInstance = @intToPtr(HINSTANCE, std.process.getBaseAddress());
         const className = std.unicode.utf8ToUtf16LeStringLiteral("Class Name");
-        const wc = win32.WNDCLASSEXW{
+        const wc = WNDCLASSEXW{
             .style = 0,
             .lpfnWndProc = WindowProc,
             .cbClsExtra = 0,
@@ -23,34 +26,36 @@ pub const MainWindow = struct {
             .lpszClassName = className,
             .hIconSm = null,
         };
-        expect(win32.RegisterClassExW(&wc) != 0);
+        expect(RegisterClassExW(&wc) != 0);
 
-        const hWnd = win32.CreateWindowExW(
+        const hWnd = CreateWindowExW(
             0,
             className,
             std.unicode.utf8ToUtf16LeStringLiteral("Window Title"),
-            win32.WS_OVERLAPPEDWINDOW,
-            win32.CW_USEDEFAULT,
-            win32.CW_USEDEFAULT,
-            win32.CW_USEDEFAULT,
-            win32.CW_USEDEFAULT,
+            WS_OVERLAPPEDWINDOW,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
             null,
             null,
             hInstance,
             null, // TODO: Add application pointer
         ).?;
 
-        _ = win32.ShowWindow(hWnd, SW_SHOW);
+        _ = ShowWindow(hWnd, SW_SHOW);
 
         var msg: MSG = undefined;
-        while (win32.GetMessageW(&msg, null, 0, 0) != 0) {
-            _ = win32.TranslateMessage(&msg);
-            _ = win32.DispatchMessageW(&msg);
+        while (GetMessageW(&msg, null, 0, 0) != 0) {
+            _ = TranslateMessage(&msg);
+            _ = DispatchMessageW(&msg);
         }
     }
 };
 
 fn WindowProc(hwnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.Stdcall) LRESULT {
+    var pMainWindow = @intToPtr(*MainWindow, GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+
     switch (message) {
         WM_CREATE => std.log.info("All your codebase are belong to us.", .{}),
         WM_DESTROY => {
@@ -60,5 +65,5 @@ fn WindowProc(hwnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM) callcon
         else => {},
     }
 
-    return win32.DefWindowProcW(hwnd, message, wParam, lParam);
+    return DefWindowProcW(hwnd, message, wParam, lParam);
 }

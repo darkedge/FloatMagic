@@ -33,6 +33,8 @@ pub const CW_USEDEFAULT = @truncate(i32, 0x80000000);
 
 pub const ATOM = WORD;
 
+pub const GWLP_USERDATA = -21;
+
 pub const WNDCLASSEXW = extern struct {
     cbSize: UINT = @sizeOf(WNDCLASSEXW),
     style: UINT,
@@ -52,5 +54,6 @@ pub extern "user32" fn DefWindowProcW(HWND, Msg: UINT, WPARAM, LPARAM) callconv(
 pub extern "user32" fn CreateWindowExW(dwExStyle: DWORD, lpClassName: LPCWSTR, lpWindowName: LPCWSTR, dwStyle: DWORD, X: i32, Y: i32, nWidth: i32, nHeight: i32, hWndParent: ?HWND, hMenu: ?HMENU, hInstance: HINSTANCE, lpParam: ?LPVOID) callconv(.Stdcall) ?HWND;
 pub extern "user32" fn GetMessageW(lpMsg: *MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT) callconv(.Stdcall) BOOL;
 pub extern "user32" fn DispatchMessageW(lpMsg: *const MSG) callconv(.Stdcall) LRESULT;
+pub extern "user32" fn GetWindowLongPtrW(hWnd: HWND, nIndex: i32) callconv(.Stdcall) LONG_PTR;
 pub extern "kernel32" fn GetLastError() callconv(.Stdcall) DWORD;
 pub extern "kernel32" fn RegisterClassExW(*const WNDCLASSEXW) callconv(.Stdcall) ATOM;
