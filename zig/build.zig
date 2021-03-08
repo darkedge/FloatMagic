@@ -15,6 +15,7 @@ pub fn build(b: *Builder) void {
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
+    exe.linkSystemLibrary("c");
 
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());

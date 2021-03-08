@@ -1,3 +1,7 @@
+pub usingnamespace @cImport({
+    @cInclude("d2d1.h");
+});
+
 const std = @import("std");
 usingnamespace std.os.windows;
 usingnamespace std.os.windows.user32;

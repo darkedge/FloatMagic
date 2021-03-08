@@ -8,8 +8,6 @@ usingnamespace @import("win32.zig");
 usingnamespace @import("control.zig");
 
 pub const MainWindow = struct {
-
-
     pub fn run() void {
         const hInstance = @intToPtr(HINSTANCE, std.process.getBaseAddress());
         const className = std.unicode.utf8ToUtf16LeStringLiteral("Class Name");
